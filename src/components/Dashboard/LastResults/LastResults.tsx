@@ -15,9 +15,6 @@ const LastResults = ({ lastResultsUpdated }: ILastResults) => {
 		} else {
 			setLastResults([])
 		}
-		// return () => {
-		// 	second
-		// }
 	}, [lastResultsUpdated])
 	console.log(lastResults)
 	return (

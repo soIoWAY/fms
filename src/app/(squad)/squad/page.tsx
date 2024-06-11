@@ -1,12 +1,17 @@
 'use client'
 import { Player } from '@/types/Player'
+import { useEffect, useState } from 'react'
 import { FaCaretDown } from 'react-icons/fa'
 
-interface ISquadPage {
-	players: Player[]
-}
-
-export default function SquadPage({ players }: ISquadPage) {
+export default function SquadPage() {
+	const [players, setPlayers] = useState<Player[]>([])
+	useEffect(() => {
+		const storedPlayersJSON = localStorage.getItem('players')
+		if (storedPlayersJSON) {
+			const storedPlayer = JSON.parse(storedPlayersJSON)
+			setPlayers(storedPlayer)
+		}
+	}, [])
 	return (
 		<div className='min-h-screen bg-[#1b1e2d] py-6 px-10'>
 			<div className='flex justify-between items-center'>

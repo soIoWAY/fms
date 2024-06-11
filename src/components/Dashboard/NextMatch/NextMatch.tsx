@@ -3,6 +3,7 @@ import { getMyTeamIndex } from '@/functions/getMyTeam'
 import { getMyTeamAvg } from '@/functions/getMyTeamAvg'
 import { getRandomEnemyTeam } from '@/functions/getRandomEnemyTeam'
 import { simulateMatch } from '@/functions/simulateMatch'
+import { updatePlayerStats } from '@/functions/updatePlayersStats'
 import { Team } from '@/types/Team'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -32,7 +33,6 @@ const NextMatch = ({ updateTableData, updateLastResults }: INextMatch) => {
 
 			const myTeamIndex = getMyTeamIndex(storedTeams)
 			const myTeamAvg = getMyTeamAvg(storedPlayers)
-			console.log(myTeamAvg)
 
 			if (
 				storedTeams[myTeamIndex].wins +
@@ -54,9 +54,12 @@ const NextMatch = ({ updateTableData, updateLastResults }: INextMatch) => {
 								myTeamAvg,
 								enemyRating
 							)
+							updatePlayerStats(storedPlayers)
+
 							setNextMatch({ myTeam: storedTeams[myTeamIndex], enemyTeam })
 							results.push(result)
 							if (results.length > 10) results.shift()
+							localStorage.setItem('players', JSON.stringify(storedPlayers))
 						}
 					}
 					const remainingTeams = storedTeams.filter(
