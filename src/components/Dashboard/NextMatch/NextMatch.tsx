@@ -54,7 +54,8 @@ const NextMatch = ({ updateTableData, updateLastResults }: INextMatch) => {
 								myTeamAvg,
 								enemyRating
 							)
-							updatePlayerStats(storedPlayers)
+
+							updatePlayerStats(storedPlayers, result)
 
 							setNextMatch({ myTeam: storedTeams[myTeamIndex], enemyTeam })
 							results.push(result)
