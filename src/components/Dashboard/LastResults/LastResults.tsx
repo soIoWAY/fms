@@ -6,6 +6,18 @@ interface ILastResults {
 	lastResultsUpdated: boolean
 }
 
+const teamLogo: { [key: string]: string } = {
+	Shakhtar: '/sd.svg',
+	Lviv: '/fclviv.svg',
+	Oleksandriya: '/oleksa.svg',
+	Dnipro: '/dn1.svg',
+	Mariupol: '/mariupol.svg',
+	Zorya: '/zorya.svg',
+	Desna: '/desna.svg',
+	Vorskla: '/vorskla.svg',
+	Dynamo: '/rukh.svg',
+}
+
 const LastResults = ({ lastResultsUpdated }: ILastResults) => {
 	const [lastResults, setLastResults] = useState<any[]>([])
 	useEffect(() => {
@@ -16,7 +28,6 @@ const LastResults = ({ lastResultsUpdated }: ILastResults) => {
 			setLastResults([])
 		}
 	}, [lastResultsUpdated])
-	console.log(lastResults)
 	return (
 		<div className='bg-[#252837] flex flex-col p-2 rounded-md'>
 			<h2 className='text-[#05C7C7] uppercase font-bold text-sm tracking-widest mb-2'>
@@ -31,9 +42,7 @@ const LastResults = ({ lastResultsUpdated }: ILastResults) => {
 				>
 					<div className='flex items-center'>
 						<Image
-							src={
-								lastResult.team2.name === 'Shakhtar' ? '/sd.svg' : '/zorya.svg'
-							}
+							src={teamLogo[lastResult.team2.name]}
 							width={35}
 							height={35}
 							alt={lastResult.name}

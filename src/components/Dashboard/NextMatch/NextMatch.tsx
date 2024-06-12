@@ -90,7 +90,7 @@ const NextMatch = ({ updateTableData, updateLastResults }: INextMatch) => {
 		<div className='flex flex-col items-center bg-[#252837] py-5 rounded-md'>
 			<div className='flex items-center'>
 				<div>
-					<Image src='/sd.svg' alt='dk' width={200} height={200} />
+					<Image src='/sd.svg' alt='enemyTeam' width={200} height={200} />
 				</div>
 				<div className='font-semibold flex flex-col items-center'>
 					<h2 className='uppercase text-md pb-2 text-[#05C7C7]'>Next match</h2>
@@ -107,7 +107,7 @@ const NextMatch = ({ updateTableData, updateLastResults }: INextMatch) => {
 					</div>
 				</div>
 				<div>
-					<Image src='/rukh.svg' alt='sd' width={200} height={200} />
+					<Image src='/rukh.svg' alt='myTeam' width={200} height={200} />
 				</div>
 			</div>
 			<div className='text-sm flex gap-2'>

@@ -1,10 +1,29 @@
 'use client'
 import { Player } from '@/types/Player'
 import { useEffect, useState } from 'react'
-import { FaCaretDown } from 'react-icons/fa'
 
 export default function SquadPage() {
 	const [players, setPlayers] = useState<Player[]>([])
+	const [filter, setFilter] = useState('position')
+	const changeFilterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setFilter(e.target.value)
+	}
+	const getFilteredPlayer = () => {
+		return [...players].sort((a, b) => {
+			switch (filter) {
+				case 'goals':
+					return b.goal - a.goal
+				case 'gpasses':
+					return b.gpas - a.gpas
+				case 'age':
+					return a.age - b.age
+				case 'position':
+					return a.pos.localeCompare(b.pos)
+				default:
+					return 0
+			}
+		})
+	}
 	useEffect(() => {
 		const storedPlayersJSON = localStorage.getItem('players')
 		if (storedPlayersJSON) {
@@ -18,10 +37,16 @@ export default function SquadPage() {
 				<h2 className='text-[#0acddd] uppercase font-semibold tracking-wider'>
 					Players
 				</h2>
-				<button className='flex items-center gap-1 tracking-wider bg-[#5d6573] px-3 py-1 rounded-lg'>
-					<span>Filter</span>
-					<FaCaretDown />
-				</button>
+				<select
+					className='flex items-center tracking-wider bg-[#5d6573] px-1 py-1 rounded-lg'
+					value={filter}
+					onChange={changeFilterHandler}
+				>
+					<option value='goals'>Goals</option>
+					<option value='gpasses'>Gpasses</option>
+					<option value='age'>Age</option>
+					<option value='position'>Position</option>
+				</select>
 			</div>
 			<table className='text-start w-full bg-[#252837] mt-6 text-sm'>
 				<thead className='border-b border-purple-600'>
@@ -35,11 +60,12 @@ export default function SquadPage() {
 					</tr>
 				</thead>
 				<tbody>
-					{players.map((player, index) => (
+					{getFilteredPlayer().map((player, index) => (
 						<tr
 							className={`${
 								index % 2 === 0 ? 'bg-[#1f2231]' : 'bg-[#1b1e2d]'
 							} key={index}`}
+							key={index}
 						>
 							<td className='px-2 py-1'>{player.name}</td>
 							<td className='px-2 py-1'>{player.pos}</td>
