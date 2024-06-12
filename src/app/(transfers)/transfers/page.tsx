@@ -1,17 +1,25 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { FaCaretDown } from 'react-icons/fa'
+import TransfersBalance from '@/components/Transfers/TransfersBalance'
+import TransfersModal from '@/components/Transfers/TransfersModal'
+import TransfersSelector from '@/components/Transfers/TransfersSelector'
+import TransfersTable from '@/components/Transfers/TransfersTable'
+import { Player } from '@/types/Player'
+import { TransferPlayer } from '@/types/TransferPlayer'
+import React, { useEffect, useState } from 'react'
 
-interface ITransferPlayer {
-	name: string
-	price: number
-	rating: number
-	age: number
-	pos: string
-}
+// перевірка на гравців якщо в команді залишиться менше 4 захисників заборонити продаж
 
 export default function TransfersPage() {
-	const [transferPlayers, setTransferPlayers] = useState<ITransferPlayer[]>([])
+	const [transferPlayers, setTransferPlayers] = useState<TransferPlayer[]>([])
+	const [filter, setFilter] = useState('Position')
+	const [isBuyPlayerModalOpen, setIsBuyPlayerModalOpen] = useState(false)
+	const [buyPlayerName, setBuyPlayerName] = useState('')
+	const [buyPlayerRating, setBuyPlayerRating] = useState(0)
+	const [buyPlayerAge, setBuyPlayerAge] = useState(0)
+	const [buyPlayerPosition, setBuyPlayerPosition] = useState('')
+	const [buyPlayerPrice, setBuyPlayerPrice] = useState(0)
+	const [players, setPlayers] = useState<Player[]>([])
+	// забрати фетч
 	const fetchTransferPlayers = async () => {
 		try {
 			const res = await fetch('/api/transferPlayers')
@@ -27,65 +35,90 @@ export default function TransfersPage() {
 	}
 	useEffect(() => {
 		const storedTransferPlayers = localStorage.getItem('transferPlayers')
-		if (storedTransferPlayers) {
+		const storedPlayers = localStorage.getItem('players')
+		if (storedTransferPlayers && storedPlayers) {
 			setTransferPlayers(JSON.parse(storedTransferPlayers))
+			setPlayers(JSON.parse(storedPlayers))
 		} else {
 			fetchTransferPlayers()
 		}
 	}, [])
 
-	function formatNumber(num: number): string {
-		return num.toLocaleString('uk-UA', {
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
-		})
+	const changeFilterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setFilter(e.target.value)
 	}
+
+	const cancelBuyPlayer = () => {
+		setIsBuyPlayerModalOpen(false)
+	}
+
+	const confirmBuyPlayer = (
+		name: string,
+		position: string,
+		age: number,
+		rating: number
+	) => {
+		players.push({
+			name: name,
+			pos: position,
+			age: age,
+			rating: rating,
+			games: 0,
+			gpas: 0,
+			goal: 0,
+		})
+		localStorage.setItem('players', JSON.stringify(players))
+	}
+
+	const buyPlayer = (
+		name: string,
+		age: number,
+		rating: number,
+		position: string,
+		price: number
+	) => {
+		setIsBuyPlayerModalOpen(true)
+		setBuyPlayerName(name)
+		setBuyPlayerPosition(position)
+		setBuyPlayerRating(rating)
+		setBuyPlayerAge(age)
+		setBuyPlayerPrice(price)
+		console.log(name, age, rating, position)
+	}
+
 	return (
 		<div className='min-h-screen py-6 px-10 bg-[#1b1e2d]'>
 			<div className='bg-[#242736] rounded-md flex justify-between items-center py-2 px-3'>
 				<h2 className='text-[#0acddd] uppercase font-semibold tracking-wider'>
 					players in the available zone
 				</h2>
-				<button className='flex items-center gap-1 tracking-wider bg-[#5d6573] px-3 py-1 rounded-lg'>
-					<span>Filter</span>
-					<FaCaretDown />
-				</button>
+				<TransfersSelector
+					filter={filter}
+					changeFilterHandler={changeFilterHandler}
+				/>
 			</div>
 			<div className='mt-6 flex justify-between items-center'>
 				<h2 className='text-[#0acddd] uppercase font-semibold tracking-wider'>
-					players found - 43
+					players found - {transferPlayers.length}
 				</h2>
-				<div className='flex flex-col text-center bg-[#242633] p-2 rounded-md'>
-					<h2 className='uppercase text-sm text-gray-300'>Transfer balance</h2>
-					<span className='text-white font-semibold'>2 000 000</span>
-				</div>
+				<TransfersBalance />
 			</div>
-			<table className='text-start w-full bg-[#252837] mt-2 text-sm'>
-				<thead className='border-b border-purple-600'>
-					<tr>
-						<th className='p-1 text-left'>NAME</th>
-						<th className='p-1 text-left'>POSITION</th>
-						<th className='p-1 text-left'>AGE</th>
-						<th className='p-1 text-left'>RATING</th>
-						<th className='p-1 text-left'>PRICE</th>
-					</tr>
-				</thead>
-				<tbody>
-					{transferPlayers.map((player, index) => (
-						<tr
-							className={`${
-								index % 2 === 0 ? 'bg-[#1f2231]' : 'bg-[#1b1e2d]'
-							} key={index}`}
-						>
-							<td className='px-2 py-1'>{player.name}</td>
-							<td className='px-2 py-1'>{player.pos}</td>
-							<td className='px-2 py-1'>{player.age}</td>
-							<td className='px-2 py-1'>{player.rating}</td>
-							<td className='px-2 py-1'>{formatNumber(player.price)}</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
+			<TransfersTable
+				transferPlayers={transferPlayers}
+				filter={filter}
+				buyPlayer={buyPlayer}
+			/>
+			{isBuyPlayerModalOpen && (
+				<TransfersModal
+					buyPlayerAge={buyPlayerAge}
+					buyPlayerPosition={buyPlayerPosition}
+					buyPlayerName={buyPlayerName}
+					buyPlayerPrice={buyPlayerPrice}
+					buyPlayerRating={buyPlayerRating}
+					cancelBuyPlayer={cancelBuyPlayer}
+					confirmBuyPlayer={confirmBuyPlayer}
+				/>
+			)}
 		</div>
 	)
 }
