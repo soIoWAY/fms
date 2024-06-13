@@ -3,7 +3,7 @@ import { formatNumber } from '@/functions/formatNumber'
 interface ITransfersModal {
 	buyPlayerName: string
 	buyPlayerRating: number
-	buyPlayerPrice: number
+	buyPlayerPrice?: number
 	buyPlayerAge: number
 	buyPlayerPosition: string
 	cancelBuyPlayer: () => void
@@ -58,7 +58,7 @@ const TransfersModal = ({
 							price
 						</span>
 						<span className='tracking-wide'>
-							{formatNumber(buyPlayerPrice)}$
+							{buyPlayerPrice ? formatNumber(buyPlayerPrice) : 0}$
 						</span>
 					</div>
 				</div>

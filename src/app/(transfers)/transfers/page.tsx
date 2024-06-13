@@ -67,7 +67,14 @@ export default function TransfersPage() {
 			gpas: 0,
 			goal: 0,
 		})
+
+		const removeTransferPlayerIndex = transferPlayers.findIndex(
+			transferPlayer => transferPlayer.name === name
+		)
+		transferPlayers.splice(removeTransferPlayerIndex, 1)
+		localStorage.setItem('transferPlayers', JSON.stringify(transferPlayers))
 		localStorage.setItem('players', JSON.stringify(players))
+		setIsBuyPlayerModalOpen(false)
 	}
 
 	const buyPlayer = (
@@ -83,7 +90,6 @@ export default function TransfersPage() {
 		setBuyPlayerRating(rating)
 		setBuyPlayerAge(age)
 		setBuyPlayerPrice(price)
-		console.log(name, age, rating, position)
 	}
 
 	return (
