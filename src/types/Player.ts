@@ -6,4 +6,5 @@ export interface Player {
 	games: number
 	goal: number
 	gpas: number
+	price: number
 }

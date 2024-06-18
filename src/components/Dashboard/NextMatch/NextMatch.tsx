@@ -5,16 +5,21 @@ import { getRandomEnemyTeam } from '@/functions/getRandomEnemyTeam'
 import { simulateMatch } from '@/functions/simulateMatch'
 import { updatePlayerStats } from '@/functions/updatePlayersStats'
 import { Team } from '@/types/Team'
-import Image from 'next/image'
 import { useState } from 'react'
 import { MdOutlineStadium } from 'react-icons/md'
+import Match from './Match'
 
 interface INextMatch {
 	updateTableData: () => void
 	updateLastResults: () => void
+	updatePlayerLocalStats: () => void
 }
 
-const NextMatch = ({ updateTableData, updateLastResults }: INextMatch) => {
+const NextMatch = ({
+	updateTableData,
+	updateLastResults,
+	updatePlayerLocalStats,
+}: INextMatch) => {
 	const [nextMatch, setNextMatch] = useState<{
 		myTeam: Team
 		enemyTeam: Team
@@ -24,6 +29,7 @@ const NextMatch = ({ updateTableData, updateLastResults }: INextMatch) => {
 		// в дешборді все в локал сторадж
 		const storedTeamsJSON = localStorage.getItem('teams')
 		const storedPlayersJSON = localStorage.getItem('players')
+
 		const storedResultsJSON = localStorage.getItem('results')
 
 		let results = storedResultsJSON ? JSON.parse(storedResultsJSON) : []
@@ -85,31 +91,14 @@ const NextMatch = ({ updateTableData, updateLastResults }: INextMatch) => {
 		}
 		updateTableData()
 		updateLastResults()
+		updatePlayerLocalStats()
 	}
 	return (
 		<div className='flex flex-col items-center bg-[#252837] py-5 rounded-md'>
-			<div className='flex items-center'>
-				<div>
-					<Image src='/sd.svg' alt='enemyTeam' width={200} height={200} />
-				</div>
-				<div className='font-semibold flex flex-col items-center'>
-					<h2 className='uppercase text-md pb-2 text-[#05C7C7]'>Next match</h2>
-					<div className='flex flex-col items-center border-t border-b py-2 text-lg'>
-						<div className='flex gap-3'>
-							<span className='w-20'>{nextMatch?.myTeam.name}</span>
-							<span>-</span>
-							<span className='w-20'>{nextMatch?.enemyTeam.name}</span>
-						</div>
-						<p className='text-base text-gray-300 flex gap-1'>
-							<span>1</span>-<span>3</span>
-						</p>
-						<p className='text-sm text-gray-300'>Ukraine Premier League</p>
-					</div>
-				</div>
-				<div>
-					<Image src='/rukh.svg' alt='myTeam' width={200} height={200} />
-				</div>
-			</div>
+			<Match
+				myTeamName={nextMatch?.myTeam.name || ''}
+				enemyTeamName={nextMatch?.enemyTeam.name || ''}
+			/>
 			<div className='text-sm flex gap-2'>
 				<span>
 					<MdOutlineStadium className='fill-purple-600 text-xl' />

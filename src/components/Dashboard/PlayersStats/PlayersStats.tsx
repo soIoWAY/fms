@@ -2,7 +2,10 @@
 import { Player } from '@/types/Player'
 import { useEffect, useState } from 'react'
 import { IoMdFootball } from 'react-icons/io'
-const PlayersStats = () => {
+interface IPlayersStats {
+	playersStatsUpdated: boolean
+}
+const PlayersStats = ({ playersStatsUpdated }: IPlayersStats) => {
 	const [players, setPlayers] = useState<Player[]>([])
 	useEffect(() => {
 		const storedPlayersJSON = localStorage.getItem('players')
@@ -10,7 +13,7 @@ const PlayersStats = () => {
 			const storedPlayers = JSON.parse(storedPlayersJSON)
 			setPlayers(storedPlayers)
 		}
-	}, [])
+	}, [playersStatsUpdated])
 
 	const getGoalscorer = () => {
 		return players.reduce(

@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react'
 
 export default function TransfersPage() {
 	const [transferPlayers, setTransferPlayers] = useState<TransferPlayer[]>([])
+	const [transferBalance, setTransferBalance] = useState(0)
 	const [filter, setFilter] = useState('Position')
 	const [isBuyPlayerModalOpen, setIsBuyPlayerModalOpen] = useState(false)
 	const [buyPlayerName, setBuyPlayerName] = useState('')
@@ -36,9 +37,11 @@ export default function TransfersPage() {
 	useEffect(() => {
 		const storedTransferPlayers = localStorage.getItem('transferPlayers')
 		const storedPlayers = localStorage.getItem('players')
-		if (storedTransferPlayers && storedPlayers) {
+		const storedTransferBalance = localStorage.getItem('transferBalance')
+		if (storedTransferPlayers && storedPlayers && storedTransferBalance) {
 			setTransferPlayers(JSON.parse(storedTransferPlayers))
 			setPlayers(JSON.parse(storedPlayers))
+			setTransferBalance(JSON.parse(storedTransferBalance))
 		} else {
 			fetchTransferPlayers()
 		}
@@ -56,25 +59,36 @@ export default function TransfersPage() {
 		name: string,
 		position: string,
 		age: number,
-		rating: number
+		rating: number,
+		price: number
 	) => {
-		players.push({
-			name: name,
-			pos: position,
-			age: age,
-			rating: rating,
-			games: 0,
-			gpas: 0,
-			goal: 0,
-		})
+		if (transferBalance - price > 0) {
+			players.push({
+				name: name,
+				pos: position,
+				age: age,
+				rating: rating,
+				games: 0,
+				gpas: 0,
+				goal: 0,
+				price: price,
+			})
 
-		const removeTransferPlayerIndex = transferPlayers.findIndex(
-			transferPlayer => transferPlayer.name === name
-		)
-		transferPlayers.splice(removeTransferPlayerIndex, 1)
-		localStorage.setItem('transferPlayers', JSON.stringify(transferPlayers))
-		localStorage.setItem('players', JSON.stringify(players))
-		setIsBuyPlayerModalOpen(false)
+			const removeTransferPlayerIndex = transferPlayers.findIndex(
+				transferPlayer => transferPlayer.name === name
+			)
+			transferPlayers.splice(removeTransferPlayerIndex, 1)
+			localStorage.setItem('transferPlayers', JSON.stringify(transferPlayers))
+			localStorage.setItem('players', JSON.stringify(players))
+			setIsBuyPlayerModalOpen(false)
+			localStorage.setItem(
+				'transferBalance',
+				JSON.stringify(transferBalance - price)
+			)
+			setTransferBalance(transferBalance - price)
+		} else {
+			alert('Недостатньо грошей на балансі')
+		}
 	}
 
 	const buyPlayer = (
@@ -107,7 +121,7 @@ export default function TransfersPage() {
 				<h2 className='text-[#0acddd] uppercase font-semibold tracking-wider'>
 					players found - {transferPlayers.length}
 				</h2>
-				<TransfersBalance />
+				<TransfersBalance transferBalance={transferBalance} />
 			</div>
 			<TransfersTable
 				transferPlayers={transferPlayers}

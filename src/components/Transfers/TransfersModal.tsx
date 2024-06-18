@@ -11,7 +11,8 @@ interface ITransfersModal {
 		name: string,
 		position: string,
 		age: number,
-		rating: number
+		rating: number,
+		price: number
 	) => void
 }
 
@@ -65,14 +66,19 @@ const TransfersModal = ({
 				<div className='flex gap-3 justify-end mt-3'>
 					<button
 						className='bg-[#027781] px-3 rounded-md'
-						onClick={() =>
-							confirmBuyPlayer(
-								buyPlayerName,
-								buyPlayerPosition,
-								buyPlayerAge,
-								buyPlayerRating
-							)
-						}
+						onClick={() => {
+							if (buyPlayerPrice) {
+								confirmBuyPlayer(
+									buyPlayerName,
+									buyPlayerPosition,
+									buyPlayerAge,
+									buyPlayerRating,
+									buyPlayerPrice
+								)
+							} else {
+								console.error('balance error')
+							}
+						}}
 					>
 						Yes
 					</button>

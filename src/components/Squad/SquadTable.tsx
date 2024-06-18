@@ -1,3 +1,4 @@
+import { formatNumber } from '@/functions/formatNumber'
 import { getFilteredPlayers } from '@/functions/getFilteredPlayers'
 import { Player } from '@/types/Player'
 
@@ -8,7 +9,8 @@ interface ISquadTable {
 		name: string,
 		age: number,
 		rating: number,
-		position: string
+		position: string,
+		price: number
 	) => void
 }
 
@@ -23,6 +25,7 @@ const SquadTable = ({ players, filter, sellPlayer }: ISquadTable) => {
 					<th className='p-1 text-left'>GAMES</th>
 					<th className='p-1 text-left'>GOAL</th>
 					<th className='p-1 text-left'>GPASS</th>
+					<th className='p-1 text-left'>PRICE</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -36,7 +39,13 @@ const SquadTable = ({ players, filter, sellPlayer }: ISquadTable) => {
 						<td
 							className='px-2 py-1 cursor-pointer	'
 							onClick={() =>
-								sellPlayer(player.name, player.age, player.rating, player.pos)
+								sellPlayer(
+									player.name,
+									player.age,
+									player.rating,
+									player.pos,
+									player.price
+								)
 							}
 						>
 							{player.name}
@@ -46,6 +55,7 @@ const SquadTable = ({ players, filter, sellPlayer }: ISquadTable) => {
 						<td className='px-2 py-1'>{player.games}</td>
 						<td className='px-2 py-1'>{player.goal}</td>
 						<td className='px-2 py-1'>{player.gpas}</td>
+						<td className='px-2 py-1'>{formatNumber(player.price)}</td>
 					</tr>
 				))}
 			</tbody>

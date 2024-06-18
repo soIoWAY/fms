@@ -9,11 +9,15 @@ import { useState } from 'react'
 export default function DashboardPage() {
 	const [tableDataUpdate, setTableDataUpdated] = useState(false)
 	const [lastResultsUpdate, setLastResultsUpdate] = useState(false)
+	const [playerLocalStatsUpdate, setPlayerLocalStats] = useState(false)
 	const updateTableData = () => {
 		setTableDataUpdated(!tableDataUpdate)
 	}
 	const updateLastResults = () => {
 		setLastResultsUpdate(!lastResultsUpdate)
+	}
+	const updatePlayersLocalStats = () => {
+		setPlayerLocalStats(!playerLocalStatsUpdate)
 	}
 	return (
 		<div className='flex bg-[#1D202F]'>
@@ -23,12 +27,13 @@ export default function DashboardPage() {
 					<NextMatch
 						updateTableData={updateTableData}
 						updateLastResults={updateLastResults}
+						updatePlayerLocalStats={updatePlayersLocalStats}
 					/>
 					<Table tableDataUpdated={tableDataUpdate} />
 				</div>
 				<div className='w-3/12 flex flex-col gap-6'>
 					<LastResults lastResultsUpdated={lastResultsUpdate} />
-					<PlayersStats />
+					<PlayersStats playersStatsUpdated={playerLocalStatsUpdate} />
 				</div>
 			</main>
 		</div>

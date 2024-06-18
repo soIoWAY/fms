@@ -17,11 +17,13 @@ const Table = ({ tableDataUpdated }: ITable) => {
 			console.error(error)
 		}
 	}
+	// transfer players
 	const fetchPlayers = async () => {
 		try {
 			const res = await fetch('/api/players')
 			const data = await res.json()
 			localStorage.setItem('players', JSON.stringify(data.players))
+			localStorage.setItem('transferBalance', JSON.stringify(1000000))
 		} catch (error) {
 			console.error(error)
 		}
